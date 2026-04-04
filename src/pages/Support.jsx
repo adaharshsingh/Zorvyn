@@ -27,23 +27,23 @@ export const Support = () => {
     <div className="animate-fade-in flex flex-col gap-6 h-full pb-8">
       
       {/* Support Hero Header */}
-      <div className="card border border-glass flex flex-col md:flex-row items-center justify-between p-6 md:p-12 gap-6 md:gap-8 relative overflow-hidden md:h-[240px]">
+      <div className="card border border-glass flex flex-col lg:flex-row lg:items-center justify-between p-4 sm:p-6 md:p-8 lg:p-12 gap-4 sm:gap-6 md:gap-8 relative lg:items-center items-center">
         {/* Decorative Background Accents */}
         <div className="absolute right-0 top-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none transform translate-x-1/3 -translate-y-1/3"></div>
         <div className="absolute left-0 bottom-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none transform -translate-x-1/2 translate-y-1/2"></div>
         
-        <div className="relative z-10 flex flex-col items-start gap-3 md:gap-4 flex-1">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary tracking-tight">How can we help?</h1>
-          <p className="text-xs sm:text-sm md:text-base lg:text-lg text-muted font-medium max-w-xl line-clamp-3 md:line-clamp-none">Search our knowledge base or reach out to our dedicated priority support team exclusively managed for premium accounts.</p>
+        <div className="relative z-10 flex flex-col gap-2 sm:gap-3 md:gap-4 flex-1 min-w-0 lg:items-start items-center lg:text-left text-center">
+          <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-primary tracking-tight">How can we help?</h1>
+          <p className="text-xs sm:text-sm md:text-base text-muted font-medium line-clamp-none">Search our knowledge base or reach out to our dedicated priority support team.</p>
         </div>
 
-        <div className="relative z-10 w-full md:w-[400px] shrink-0">
+        <div className="relative z-10 w-full lg:w-auto lg:min-w-[350px] shrink-0">
           <div className="relative w-full shadow-lg rounded-2xl">
-            <Search size={16} className="md:size-5 absolute left-3 md:left-4 top-1/2 transform -translate-y-1/2 text-slate-400" />
+            <Search size={14} className="sm:size-4 md:size-5 absolute left-3 md:left-4 top-1/2 transform -translate-y-1/2 text-slate-400" />
             <input 
               type="text" 
-              className="w-full bg-white dark:bg-slate-900 border-2 border-indigo-500/30 dark:border-indigo-500/50 outline-none focus:border-indigo-500 transition-colors py-3 md:py-4 pl-10 md:pl-12 pr-3 md:pr-4 rounded-2xl text-sm md:text-base font-medium text-slate-900 dark:text-slate-100 placeholder:text-slate-400" 
-              placeholder="Search guides, tools, and FAQs..." 
+              className="w-full bg-white dark:bg-slate-900 border-2 border-indigo-500/30 dark:border-indigo-500/50 outline-none focus:border-indigo-500 transition-colors py-2 sm:py-2.5 md:py-3 pl-9 sm:pl-10 md:pl-12 pr-3 md:pr-4 rounded-2xl text-xs sm:text-sm md:text-base font-medium text-slate-900 dark:text-slate-100 placeholder:text-slate-400" 
+              placeholder="Search..." 
             />
           </div>
         </div>

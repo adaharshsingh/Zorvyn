@@ -13,7 +13,7 @@ export const FinanceProvider = ({ children }) => {
   const [transactions, setTransactions] = useLocalStorage('finance_transactions', initialTransactions);
   const [role, setRole] = useLocalStorage('finance_role', 'viewer');
   const [theme, setTheme] = useLocalStorage('finance_theme', 'light');
-  const [monthlyBudget, setMonthlyBudget] = useLocalStorage('finance_monthly_budget', 2300);
+  const [monthlyBudget, setMonthlyBudget] = useLocalStorage('finance_monthly_budget', 8000);
   const [currency, setCurrency] = useLocalStorage('finance_currency', 'USD');
   const [cardData, setCardData] = useLocalStorage('finance_card', {
       number: '**** **** 6541',
@@ -23,7 +23,11 @@ export const FinanceProvider = ({ children }) => {
 
   // Sync theme with DOM
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
   }, [theme]);
 
   // Actions

@@ -163,7 +163,7 @@ export const Insights = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-black/5 dark:bg-white/5 border border-glass px-6 py-5 rounded-2xl shadow-sm">
         <div className="flex flex-col gap-2">
           <h2 className="text-xl font-bold flex items-center gap-2">
-            <Search className="text-indigo-500" strokeWidth={2.5}/> Custom Query Synthesizer
+            <Search className="text-indigo-500" strokeWidth={2.5}/> Balance Insights
           </h2>
           <div className="flex items-center gap-3 mt-1">
              <select 
@@ -251,7 +251,7 @@ export const Insights = () => {
 
         {/* Right Bento Module: Velocity Distribution Radar */}
         <div className="lg:col-span-4 flex flex-col gap-4">
-          <h3 className="text-lg font-bold text-primary mb-1 flex items-center gap-2">Velocity Radar</h3>
+          <h3 className="text-lg font-bold text-primary mb-1 flex items-center gap-2">Expenditure Web</h3>
           <div className="card h-full min-h-[440px] border border-glass flex flex-col p-6 shadow-sm overflow-hidden relative">
             
             {/* Absolute blur accent */}

@@ -60,7 +60,7 @@ export const Markets = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-black/5 dark:bg-white/5 border border-glass px-6 py-5 rounded-2xl shadow-sm">
         <div>
           <h2 className="text-2xl font-bold flex items-center gap-2"><Globe className="text-indigo-500" strokeWidth={2.5}/> Global Markets & Equities</h2>
-          <p className="text-muted text-sm mt-1 max-w-xl">Real-time institutional volume tracking and high-frequency sentiment mapping engine.</p>
+          <p className="text-muted text-sm mt-1 max-w-xl">Real-time institutional volume tracking and Finance news.</p>
         </div>
         <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-sm flex-1 md:flex-none">
           <Activity size={16} /> Networks Operational
@@ -104,8 +104,8 @@ export const Markets = () => {
       {/* Global Market News Feed */}
       <div className="card w-full flex flex-col p-6 shadow-sm border border-glass mt-4 flex-1">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-lg flex items-center gap-2"><Newspaper className="text-amber-500" size={20}/> Macro Sentiment News Vector</h3>
-          <span className="text-xs font-bold px-2 py-1 bg-amber-500/10 text-amber-500 rounded-md shadow-sm">Alpha Vantage Market Stream</span>
+          <h3 className="font-semibold text-lg flex items-center gap-2"><Newspaper className="text-amber-500" size={20}/> Finance News</h3>
+          <span className="text-xs font-bold px-2 py-1 bg-amber-500/10 text-amber-500 rounded-md shadow-sm">Market Stream</span>
         </div>
         
         {newsLoading ? (

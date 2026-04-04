@@ -6,7 +6,7 @@ import { CreditCard as CreditCardIcon } from 'lucide-react';
 import { CreditCard as CreditCardUI } from '../components/CreditCard';
 
 export const Transactions = () => {
-  const { transactions, summary, role, addTransaction, deleteTransaction, currency, setCurrency, formatCurrency, cardData, setCardData, showToast } = useFinance();
+  const { transactions, summary, role, addTransaction, deleteTransaction, currency, setCurrency, formatCurrency, cardData, showToast } = useFinance();
   
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all'); // all, income, expense
@@ -17,7 +17,6 @@ export const Transactions = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
   
-  // Reset pagination when dataset filters mutate
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, filterType, filterCategory, sortOrder]);
@@ -111,31 +110,6 @@ export const Transactions = () => {
     });
     setIsModalOpen(false);
     setNewTx({ ...newTx, amount: '', description: '' });
-  };
-
-  const handleAddCardClick = () => {
-    setToastMsg('Warning: Adding a new card will permanently delete and replace your existing card.');
-    setNewCardForm({ number: '', expiry: '', name: '' });
-    setIsAddCardOpen(true);
-    setTimeout(() => setToastMsg(''), 5500);
-  };
-
-  const handleSaveNewCard = (e) => {
-    e.preventDefault();
-    if (!newCardForm.number || !newCardForm.name) return;
-    
-    // Auto-mask everything except last 4 of number
-    const last4 = newCardForm.number.slice(-4);
-    const maskedNum = `**** **** **** ${last4.padStart(4, '0')}`;
-    
-    setCardData({
-      number: maskedNum,
-      expiry: newCardForm.expiry || '12/29',
-      name: newCardForm.name
-    });
-    setIsAddCardOpen(false);
-    setToastMsg('New card successfully added and activated.');
-    setTimeout(() => setToastMsg(''), 4000);
   };
 
   const handleExportCSV = () => {
@@ -245,63 +219,55 @@ export const Transactions = () => {
         {/* Transactions Table Section */}
         <div className="card flex-1 flex flex-col p-0 overflow-hidden border border-glass shadow-sm">
           {/* Header & Controls */}
-          <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between p-5 border-b border-glass bg-bg-secondary w-full">
-            <div className="flex flex-col md:flex-row gap-4 w-full flex-1">
-              {/* Search Bar */}
-              <div className="relative w-full md:w-auto md:min-w-[250px] flex-1">
-                <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
-                <input 
-                  type="text" 
-                  className="form-input w-full pl-10 text-sm md:text-base" 
-                  placeholder="Search transactions..." 
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
-              
-              {/* Mobile Pair: Filters */}
-              <div className="grid grid-cols-2 md:flex gap-4 w-full md:w-auto shrink-0">
-                <select className="form-select w-full text-xs md:text-sm" value={filterType} onChange={(e) => setFilterType(e.target.value)}>
-                  <option value="all">All Types</option>
-                  <option value="income">Income</option>
-                  <option value="expense">Expense</option>
-                </select>
-                
-                <select className="form-select w-full text-xs md:text-sm" value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}>
-                  <option value="all">Categories</option>
-                  {categories.map(c => <option key={c} value={c}>{c}</option>)}
-                </select>
-              </div>
+          <div className="flex flex-col gap-4 items-start p-5 border-b border-glass bg-bg-secondary w-full">
+            {/* Search Bar */}
+            <div className="relative w-full">
+              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+              <input 
+                type="text" 
+                className="form-input w-full pl-10 text-sm md:text-base" 
+                placeholder="      Search transactions..." 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
-
-            {/* Mobile Pair: Action Controls */}
-            <div className="grid grid-cols-2 md:flex items-center gap-4 w-full md:w-auto shrink-0">
+            
+            {/* Filters Row */}
+            <div className="flex flex-col sm:flex-row gap-3 w-full">
+              <select className="form-select flex-1 text-xs md:text-sm" value={filterType} onChange={(e) => setFilterType(e.target.value)}>
+                <option value="all">All Types</option>
+                <option value="income">Income</option>
+                <option value="expense">Expense</option>
+              </select>
+              
+              <select className="form-select flex-1 text-xs md:text-sm" value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}>
+                <option value="all">Categories</option>
+                {categories.map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+              
               <button 
-                className="btn btn-ghost w-full justify-center"
+                className="btn btn-ghost w-full sm:w-auto text-xs md:text-sm px-3"
                 onClick={() => setSortOrder(prev => prev === 'desc' ? 'asc' : 'desc')}
                 title="Sort by Date"
               >
                 <ArrowUpDown size={16} /> Date {sortOrder === 'desc' ? '(Newest)' : '(Oldest)'}
               </button>
-              
-              <button className="btn btn-ghost w-full justify-center" onClick={handleExportCSV}>
-                <Download size={18} /> Export CSV
-              </button>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-3 w-full sm:items-center">
+              {role === 'admin' && (
+                <button className="btn btn-ghost flex-1 sm:flex-none text-xs md:text-sm" onClick={handleExportCSV}>
+                  <Download size={18} /> Export CSV
+                </button>
+              )}
               
               {role === 'admin' && (
-                <button className="btn btn-primary w-full md:w-auto justify-center md:hidden" onClick={() => setIsModalOpen(true)}>
-                  <Plus size={18} /> Add
+                <button className="btn btn-primary flex-1 sm:flex-none text-xs md:text-sm" onClick={() => setIsModalOpen(true)}>
+                  <Plus size={18} /> Add Transaction
                 </button>
               )}
             </div>
-            
-            {role === 'admin' && (
-               <div className="hidden md:block shrink-0">
-                 <button className="btn btn-primary" onClick={() => setIsModalOpen(true)}>
-                   <Plus size={18} /> Add
-                 </button>
-               </div>
-            )}
           </div>
           
           {/* Table */}

@@ -6,13 +6,29 @@ export const Layout = ({ children, currentTab, setCurrentTab }) => {
   const { role, toggleRole, clearAllData, theme, toggleTheme, globalToast, showToast } = useFinance();
   const [cryptoData, setCryptoData] = useState([]);
   const [showSettings, setShowSettings] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(() => window.innerWidth < 768);
+  const [showWipeConfirm, setShowWipeConfirm] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    const width = window.innerWidth;
+    return width < 1024; // Closed on small/medium, open on large
+  });
 
   useEffect(() => {
-    const handleResize = () => setIsCollapsed(window.innerWidth < 768);
+    const handleResize = () => {
+      const width = window.innerWidth;
+      setIsCollapsed(width < 1024); // Closed on small/medium, open on large
+    };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
 
   useEffect(() => {
     fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd&include_24hr_change=true')
@@ -32,7 +48,7 @@ export const Layout = ({ children, currentTab, setCurrentTab }) => {
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'transactions', label: 'Transactions', icon: ReceiptText },
     { id: 'insights', label: 'Insights', icon: PieChart },
-    { id: 'markets', label: 'Markets', icon: Globe },
+    { id: 'markets', label: 'Finance', icon: Globe },
   ];
 
   return (
@@ -85,8 +101,12 @@ export const Layout = ({ children, currentTab, setCurrentTab }) => {
           
           <button
             onClick={() => {
-              setCurrentTab('cards');
-              if (window.innerWidth < 768) setIsCollapsed(true);
+              if (role !== 'admin') {
+                showToast('Card Management is Admin-only!');
+              } else {
+                setCurrentTab('cards');
+                if (window.innerWidth < 768) setIsCollapsed(true);
+              }
             }}
             className={`md:hidden flex items-center rounded-xl transition-all duration-300 overflow-hidden ${isCollapsed ? 'px-3 py-3 justify-center' : 'px-4 py-3'} text-slate-500 dark:text-slate-400 hover:bg-black/5 dark:hover:bg-white/5 font-medium`}
             title={isCollapsed ? 'Add Card' : undefined}
@@ -132,7 +152,10 @@ export const Layout = ({ children, currentTab, setCurrentTab }) => {
           </label>
 
           <button 
-             onClick={() => setCurrentTab('support')}
+             onClick={() => {
+               setCurrentTab('support');
+               if (window.innerWidth < 768) setIsCollapsed(true);
+             }}
              className={`flex items-center rounded-xl transition-all duration-300 border-none ${isCollapsed ? 'px-3 py-3 justify-center' : 'px-4 py-3'} ${currentTab === 'support' ? 'bg-slate-400 dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-semibold shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:bg-black/5 dark:hover:bg-white/5 font-medium text-sm'}`} 
              title={isCollapsed ? 'Support' : undefined}
           >
@@ -160,7 +183,7 @@ export const Layout = ({ children, currentTab, setCurrentTab }) => {
           {showSettings && role === 'admin' && (
              <div className={`overflow-hidden transition-all duration-300 ${isCollapsed ? 'max-h-0 opacity-0' : 'max-h-[50px] opacity-100 px-4 mt-2 mb-1'}`}>
                <button 
-                 onClick={() => { if(window.confirm('Are you sure you want to completely wipe all data?')) { clearAllData(); showToast('Data successfully wiped from storage.'); } }}
+                 onClick={() => setShowWipeConfirm(true)}
                  className="w-full justify-center text-xs p-2.5 bg-red-50 text-red-600 dark:bg-rose-500/10 dark:text-rose-400 hover:bg-red-100 dark:hover:bg-rose-500/20 rounded-lg flex items-center gap-2 font-semibold transition-colors shadow-sm whitespace-nowrap"
                  title="Wipe Local Storage"
                >
@@ -266,6 +289,41 @@ export const Layout = ({ children, currentTab, setCurrentTab }) => {
         <main className="main-content">
           {children}
         </main>
+
+      {/* Wipe Data Confirmation Modal */}
+      {showWipeConfirm && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[150]" onClick={() => setShowWipeConfirm(false)}>
+          <div className="card border border-glass p-8 rounded-2xl shadow-2xl max-w-md mx-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 rounded-full bg-red-50 dark:bg-rose-500/10 flex items-center justify-center text-red-600 dark:text-rose-400">
+                <Trash2 size={24} />
+              </div>
+              <h2 className="text-xl font-bold text-primary">Wipe All Data?</h2>
+            </div>
+            <p className="text-muted mb-2 text-sm">This action will permanently delete all your transactions, settings, and stored data. This action <strong>cannot be undone</strong>.</p>
+            <p className="text-muted mb-6 text-xs italic">All data will be reset to default values on next reload.</p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowWipeConfirm(false)}
+                className="flex-1 px-4 py-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 font-semibold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  clearAllData();
+                  setShowSettings(false);
+                  setShowWipeConfirm(false);
+                  showToast('All data has been successfully wiped. Changes will take effect on next reload.');
+                }}
+                className="flex-1 px-4 py-3 rounded-lg bg-red-600 hover:bg-red-700 text-white font-semibold transition-colors flex items-center justify-center gap-2"
+              >
+                <Trash2 size={16} /> Wipe Data
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Global Application Toast Overlay */}
       {globalToast && (
