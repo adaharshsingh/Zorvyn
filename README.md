@@ -17,7 +17,7 @@ A sleek, modern finance dashboard built with React 19 — track spending, manage
 
 <br/>
 
-**[Live Demo](#) · [Report Bug](https://github.com/adaharshsingh/Zorvyn/issues) · [Request Feature](https://github.com/adaharshsingh/Zorvyn/issues)**
+**[Live Demo](https://zorvyn.vercel.app/) · [Report Bug](https://github.com/adaharshsingh/Zorvyn/issues) · [Request Feature](https://github.com/adaharshsingh/Zorvyn/issues)**
 
 </div>
 
@@ -333,23 +333,7 @@ All user data auto-saves to `localStorage`:
 
 <br/>
 
----
 
-<br/>
-
-## 📈 Roadmap
-
-- [ ] Split context → `ThemeContext` / `TransactionContext` / `ToastContext`
-- [ ] Accessibility audit (ARIA labels, keyboard nav)
-- [ ] Real bank API integration
-- [ ] PDF expense reports
-- [ ] Recurring transaction templates
-- [ ] Multi-user auth
-- [ ] Crypto wallet integration
-
-<br/>
-
----
 
 <br/>
 
