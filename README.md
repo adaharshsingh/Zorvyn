@@ -1,246 +1,364 @@
-# Zorvyn - Personal Finance Dashboard
+<div align="center">
 
-A modern, responsive, and feature-rich personal finance dashboard built with React, Vite, Context API, and Recharts. Track transactions, manage budgets, visualize spending patterns, and achieve your financial goals with an intuitive interface.
+# ⚡ Zorvyn
+
+### Personal Finance Dashboard
+
+A sleek, modern finance dashboard built with React 19 — track spending, manage budgets, monitor live crypto markets, and gain AI-powered insights into your financial habits.
+
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://react.dev)
+[![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev)
+[![Tailwind](https://img.shields.io/badge/Tailwind-3-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![License](https://img.shields.io/badge/License-MIT-22C55E?style=for-the-badge)](LICENSE)
+
+<br/>
+
+<img src="docs/screenshots/dashboard-dark.png" alt="Zorvyn Dashboard" width="100%" style="border-radius: 12px;" />
+
+<br/>
+
+**[Live Demo](#) · [Report Bug](https://github.com/adaharshsingh/Zorvyn/issues) · [Request Feature](https://github.com/adaharshsingh/Zorvyn/issues)**
+
+</div>
+
+<br/>
+
+---
+
+<br/>
+
+## 📸 Screenshots
+
+<details open>
+<summary><b>🌗 Light & Dark Mode</b></summary>
+<br/>
+<table>
+<tr>
+<td width="50%">
+
+**☀️ Light Mode**
+
+<img src="docs/screenshots/dashboard-light.png" alt="Light Mode" width="100%" />
+
+</td>
+<td width="50%">
+
+**🌙 Dark Mode**
+
+<img src="docs/screenshots/dashboard-dark.png" alt="Dark Mode" width="100%" />
+
+</td>
+</tr>
+</table>
+</details>
+
+<details open>
+<summary><b>📄 Pages</b></summary>
+<br/>
+<table>
+<tr>
+<td width="50%">
+
+**💳 Transactions**
+
+<img src="docs/screenshots/transactions.png" alt="Transactions" width="100%" />
+
+</td>
+<td width="50%">
+
+**🌐 Markets & News**
+
+<img src="docs/screenshots/markets.png" alt="Markets" width="100%" />
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+**🧠 Insights Engine**
+
+<img src="docs/screenshots/insights.png" alt="Insights" width="100%" />
+
+</td>
+</tr>
+</table>
+</details>
+
+<br/>
+
+---
+
+<br/>
 
 ## ✨ Features
 
-### Dashboard
-- **Summary Cards**: Overview of Total Balance, Income, and Expenses with responsive sizing and icons
-- **Balance Trend Chart**: Interactive line chart showing balance progression over time (filterable by month)
-- **Spending Breakdown**: Pie chart visualizing expense distribution across categories
-- **Monthly Analytics**: Bar chart comparing monthly income vs expenses
-- **Welcome Message**: Personalized greeting with cardholder name
+<table>
+<tr>
+<td width="50%" valign="top">
 
-### Transactions
-- **Full Transaction List**: View all income and expense transactions with details
-- **Advanced Filtering**: Filter by transaction type (income/expense) and category
-- **Search Feature**: Real-time search across transaction descriptions
-- **Sorting Options**: Sort by date (newest/oldest first)
-- **Add Transactions**: Create new transactions with auto-ID generation
-- **Delete Transactions**: Remove individual transactions (Admin only)
-- **Pagination**: Navigate through large transaction datasets
+### 📊 Dashboard
+- Summary cards for Balance, Income & Expenses
+- Interactive balance trend chart (filterable by month)
+- Spending breakdown pie chart
+- Monthly income vs expenses bar chart
+- Budget control with progress bar & alerts
 
-### Financial Goals Tracker
-- **RTX 5090 GPU Fund**: Track progress toward GPU goal
-- **PlayStation 5 Pro**: Monitor gaming console savings
-- **Curved Gaming Monitor**: Accumulate funds for monitor purchase
-- Smart overflow distribution (excess GPU savings redirect to Console fund)
+</td>
+<td width="50%" valign="top">
 
-### Insights Engine
-- **Spending Pattern Analysis**: Identifies highest expense categories
-- **Cash Flow Assessment**: Calculates savings rate with personalized recommendations
-- **Largest Purchase Tracking**: Highlights single biggest expense
-- **Goal Progress Monitoring**: Shows accumulated savings toward goals
-- **Activity Metrics**: Displays transaction volume and category diversity
-- **Custom Query Synthesizer**: Filter insights by month and category
+### 💳 Transactions
+- Full transaction list with search & filters
+- Sort by date (newest / oldest)
+- Add & delete transactions (role-based)
+- Paginated for large datasets
+- CSV-ready data structure
 
-### Markets & Crypto
-- **Live Crypto Data**: Real-time Bitcoin, Ethereum, and Solana prices (via CoinGecko API)
-- **Stock Tracking**: View major stocks (AAPL, NVDA, TSLA, BTC) with sparkline charts
-- **Market News**: Sentiment analysis and market updates (via AlphaVantage API)
-- **Trending Data**: Visual indicators for market performance
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
 
-### Card Management
-- **Active Card Display**: Beautiful 3D credit card visualization with metallic effects
-- **Card Customization**: Add/replace card details (number, expiry, cardholder name)
-- **Visual Design**: Premium glassmorphic card design with texture overlays
+### 🧠 Insights Engine
+- Spending pattern analysis
+- Savings rate calculator
+- Largest purchase tracker
+- Expenditure radar chart
+- Custom query: filter by month & category
 
-### Support & Help
-- **FAQ Section**: Expandable accordion with common questions
-- **Knowledge Base Categories**: Quick access to Account & Settings, Virtual Cards, Privacy & Security, and Feature Requests
-- **Search Functionality**: Find help articles and guides (responsive search input)
+</td>
+<td width="50%" valign="top">
 
-### Role-Based Access Control
-- **Viewer Role**: Read-only access to all dashboard features
-- **Admin Role**: Full access including edit/delete transactions, clear all data, manage cards
-- **Role Toggle**: Easy switching between roles (Viewer/Admin)
+### 🌐 Markets & Crypto
+- Live crypto ticker (BTC, ETH, SOL via CoinGecko)
+- Stock sparklines (AAPL, NVDA, TSLA)
+- Scrollable news carousel (up to 50 articles)
+- Sentiment badges (Bullish / Bearish / Neutral)
+- 3-tier fallback: API → Cache → Dummy data
 
-### Theme & Customization
-- **Dark Mode Toggle**: Switch between light and dark themes
-- **Persistent Settings**: Theme preference saved to localStorage
-- **Responsive Design**: Fully responsive across mobile, tablet, and desktop
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
+### 💎 Card Management
+- 3D credit card with metallic effects
+- Add / replace card details
+- Premium glassmorphic design
+
+</td>
+<td width="50%" valign="top">
+
+### 🎯 Goals Tracker
+- RTX 5090 GPU Fund
+- PlayStation 5 Pro savings
+- Curved Gaming Monitor
+- Smart overflow distribution
+
+</td>
+</tr>
+</table>
+
+<br/>
+
+---
+
+<br/>
+
+## 🛠️ Tech Stack
+
+<div align="center">
+
+| | Technology | Purpose |
+|:---:|---|---|
+| ⚛️ | **React 19** | UI library with hooks |
+| ⚡ | **Vite 8** | Lightning-fast build tool |
+| 🧠 | **Context API** | State management (memoized) |
+| 📈 | **Recharts 3** | Interactive data visualization |
+| 🎨 | **Tailwind CSS** | Utility-first styling |
+| 🔷 | **Lucide React** | Modern icon library |
+| 🔍 | **ESLint** | Code quality |
+
+</div>
+
+<br/>
+
+---
+
+<br/>
+
+## 🌐 External APIs
+
+<div align="center">
+
+| API | Endpoint | Data |
+|---|---|---|
+| **CoinGecko** | `api.coingecko.com/api/v3/simple/price` | Live BTC, ETH, SOL prices |
+| **Alpha Vantage** | `alphavantage.co/query?function=NEWS_SENTIMENT` | Finance news + sentiment |
+
+</div>
+
+> **💡 CoinGecko** is free & keyless. **Alpha Vantage** needs a free API key — see [setup](#-quick-start) below.
+
+<br/>
+
+---
+
+<br/>
+
+## 🚀 Quick Start
+
+```bash
+# Clone
+git clone https://github.com/adaharshsingh/Zorvyn.git
+cd Zorvyn
+
+# Install
+npm install
+
+# Configure API key (optional but recommended)
+cp .env.example .env
+# Edit .env → add your free Alpha Vantage key from:
+# https://www.alphavantage.co/support/#api-key
+
+# Run
+npm run dev
+```
+
+Open **http://localhost:5173** and you're in! 🎉
+
+<br/>
+
+---
+
+<br/>
+
+## 🔑 Environment Variables
+
+| Variable | Description | Default |
+|---|---|---|
+| `VITE_ALPHAVANTAGE_API_KEY` | Alpha Vantage API key for news | `demo` (rate-limited) |
+
+> Get your **free** key → [alphavantage.co/support](https://www.alphavantage.co/support/#api-key) (takes 20 seconds)
+
+<br/>
+
+---
+
+<br/>
 
 ## 🏗️ Project Structure
 
 ```
 src/
+├── api/
+│   └── cryptoAPI.js              # CoinGecko client + localStorage cache
 ├── components/
-│   ├── Layout.jsx          # Main layout with sidebar navigation
-│   ├── CreditCard.jsx      # 3D credit card component
+│   ├── Layout.jsx                # Sidebar, header, crypto marquee
+│   └── CreditCard.jsx            # 3D card component
+├── config/
+│   └── constants.js              # API endpoints, defaults, breakpoints
 ├── context/
-│   └── FinanceContext.jsx  # Global state management (Context API)
+│   └── FinanceContext.jsx         # Global state (Context + useMemo)
 ├── hooks/
-│   └── useLocalStorage.js  # Custom hook for local storage sync
+│   ├── useLocalStorage.js         # localStorage sync
+│   ├── useToast.js                # Toast notifications
+│   └── useTransactionPagination.js
 ├── pages/
-│   ├── Dashboard.jsx       # Main dashboard with charts and analytics
-│   ├── Transactions.jsx    # Transaction list and management
-│   ├── Insights.jsx        # Financial insights & analysis
-│   ├── Markets.jsx         # Crypto & stock data
-│   ├── Cards.jsx           # Card management interface
-│   └── Support.jsx         # FAQ and support section
+│   ├── Dashboard.jsx              # Charts & analytics
+│   ├── Transactions.jsx           # Transaction management
+│   ├── Insights.jsx               # Radar chart & analysis
+│   ├── Markets.jsx                # News carousel & stocks
+│   ├── Cards.jsx                  # Card management
+│   └── Support.jsx                # FAQ section
 ├── utils/
-│   ├── currencyFormatter.js # Currency formatting utility
-│   ├── mockData.js         # 12-month transaction mock data
-│   └── categories.js       # Transaction categories
-├── App.jsx                 # Main app component
-├── main.jsx                # React entry point
-├── index.css               # Global styles with CSS variables
-└── App.css                 # App-specific styles
+│   ├── currencyFormatter.js       # Multi-currency formatting
+│   └── mockData.js                # 12-month realistic mock data
+├── App.jsx
+├── main.jsx
+└── index.css                      # CSS variables & global styles
 ```
 
-## 🎨 UI/UX Highlights
+<br/>
 
-- **Glassmorphism Design**: Frosted glass effect with backdrop blur
-- **Responsive Typography**: Text scales smoothly across all device sizes
-- **Responsive Icons**: Icons resize based on screen size (e.g., 20px mobile → 28px desktop)
-- **Gradient Accents**: Vibrant indigo, emerald, and rose color schemes
-- **Micro-animations**: Fade-in effects, hover states, smooth transitions
-- **Dark Mode Support**: Complete dark mode styling with CSS variables
-- **Accessibility**: Semantic HTML, proper color contrast, ARIA labels
+---
 
-## 🛠️ Tech Stack
-
-| Technology | Purpose |
-|------------|---------|
-| **React 19** | UI library with hooks |
-| **Vite 8** | Fast build tool and dev server |
-| **Context API** | State management (no Redux needed) |
-| **Recharts 3** | Interactive data visualization |
-| **Lucide React** | Modern icon library |
-| **Tailwind CSS** | Utility-first CSS framework |
-| **PostCSS** | CSS preprocessing |
-| **ESLint** | Code linting |
-
-## 📦 Setup Instructions
-
-### Prerequisites
-- Node.js v18+ recommended
-- npm or yarn package manager
-
-### Installation
-
-1. Clone or extract the repository:
-   ```bash
-   cd e:/bh/zorvyn
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Start development server:
-   ```bash
-   npm run dev
-   ```
-
-4. Open in browser:
-   ```
-   http://localhost:5173
-   ```
-
-### Build for Production
-
-```bash
-npm run build
-npm run preview
-```
-
-## 📝 Available Scripts
-
-- `npm run dev` - Start development server with hot reload
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build locally
-- `npm run lint` - Run ESLint to check code quality
+<br/>
 
 ## 💾 Data Persistence
 
-All data is automatically saved to browser's `localStorage`:
-- **finance_transactions** - Transaction history
-- **finance_role** - User role (viewer/admin)
-- **finance_theme** - Theme preference (light/dark)
-- **finance_monthly_budget** - Monthly budget amount
-- **finance_currency** - Selected currency (USD/EUR/GBP/INR)
-- **finance_card** - Credit card details
+All user data auto-saves to `localStorage`:
 
-Clear your browser's localStorage or use "Wipe Data" button to reset everything.
+| Key | Stores |
+|---|---|
+| `finance_transactions` | Transaction history |
+| `finance_theme` | Light / dark preference |
+| `finance_role` | Viewer / admin role |
+| `finance_currency` | USD / EUR / GBP / INR |
+| `finance_monthly_budget` | Budget ceiling |
+| `finance_card` | Credit card details |
+| `cached_crypto_data` | Last fetched crypto prices |
+| `cached_market_news` | Last fetched news articles |
 
-## 🔄 State Management
+<br/>
 
-Uses React Context API for global state:
-- `useFinance()` hook provides access to all app state
-- Transactions, budgets, role, theme, currency
-- Methods: `addTransaction()`, `deleteTransaction()`, `toggleRole()`, `toggleTheme()`, etc.
+---
 
-## 📱 Responsive Breakpoints
+<br/>
 
-- **Mobile**: < 768px (md)
-- **Tablet**: 768px - 1024px (lg)
-- **Desktop**: > 1024px
+## 💡 Architecture Decisions
 
-Charts and components automatically adjust:
-- Container sizing and spacing
-- Font sizes scale smoothly
-- Icons resize based on screen size
-- Grid columns adapt (1 col mobile → 3 cols desktop)
+| Decision | Rationale |
+|---|---|
+| **3-tier API fallback** | Live API → `localStorage` cache → hardcoded dummy data. UI never breaks. |
+| **Memoized context** | Provider value wrapped in `useMemo`; actions in `useCallback` to cut re-renders |
+| **Environment variables** | API keys in `.env`, never in source. `.gitignore` blocks commits. |
+| **Centralized config** | All endpoints & defaults in `constants.js` — single source of truth |
 
-## 🎯 Key Features Implementation
+<br/>
 
-### Chart Responsiveness
-- All Recharts components use `ResponsiveContainer` with debounce
-- Chart containers have `min-h-0` for proper flex distribution
-- Explicit height constraints prevent rendering issues
+---
 
-### Currency Support
-- Supported: USD ($), EUR (€), GBP (£), INR (₹)
-- Conversion rates included
-- Format with appropriate number of decimals
-- Localization-aware number formatting
+<br/>
 
-### 12-Month Mock Data
-- Generates realistic transaction data for 12 months
-- Includes salary, rent, utilities, subscriptions
-- Goal-tracking transactions (hardware purchases)
-- Dynamic expense generation with inflation modeling
+## 🔐 Role-Based Access
 
-## ⚙️ Configuration
+| Feature | Viewer | Admin |
+|:---|:---:|:---:|
+| View dashboard & charts | ✅ | ✅ |
+| Browse transactions | ✅ | ✅ |
+| Add transactions | ❌ | ✅ |
+| Delete transactions | ❌ | ✅ |
+| Edit card details | ❌ | ✅ |
+| Wipe all data | ❌ | ✅ |
 
-### Currency Rates (`src/utils/currencyFormatter.js`)
-```javascript
-const rates = {
-  USD: { rate: 1, symbol: '$' },
-  EUR: { rate: 0.92, symbol: '€' },
-  GBP: { rate: 0.79, symbol: '£' },
-  INR: { rate: 83.12, symbol: '₹' }
-};
-```
+<br/>
 
-### CSS Variables (`src/index.css`)
-All colors, shadows, and spacing defined as CSS variables for easy theming.
+---
 
-## 🚀 Performance Optimizations
+<br/>
 
-- **Code Splitting**: React Router lazy loading
-- **Memoization**: useMemo for expensive calculations
-- **Local Storage Caching**: Avoid API calls for user data
-- **Debounced Resize**: Prevent excessive chart re-renders
-- **Lazy Loading**: Components load on demand
+## 📈 Roadmap
 
-## 📈 Future Enhancements
-
+- [ ] Split context → `ThemeContext` / `TransactionContext` / `ToastContext`
+- [ ] Accessibility audit (ARIA labels, keyboard nav)
 - [ ] Real bank API integration
-- [ ] Investment portfolio tracking
-- [ ] Budget alerts and notifications
-- [ ] Monthly/yearly expense reports PDF export
+- [ ] PDF expense reports
 - [ ] Recurring transaction templates
-- [ ] Multi-user support with authentication
-- [ ] Tax deduction categorization
-- [ ] Blockchain/crypto wallet integration
+- [ ] Multi-user auth
+- [ ] Crypto wallet integration
 
-## 📄 License
+<br/>
 
-This project is open source and available for educational purposes.
+---
 
-## 👨‍💻 Development
+<br/>
 
-Built with ❤️ using React and modern web technologies.
+<div align="center">
+
+### Built with ❤️ by [Adarsh Singh](https://github.com/adaharshsingh)
+
+<br/>
+
+⭐ **Star this repo if you found it useful!**
+
+</div>
