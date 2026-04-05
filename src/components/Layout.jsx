@@ -1,22 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { LayoutDashboard, ReceiptText, PieChart, ShieldAlert, ShieldCheck, TrendingUp, TrendingDown, Trash2, Moon, Bell, MessageSquare, Settings, ChevronsUpDown, Menu, LifeBuoy, Globe, CreditCard } from 'lucide-react';
 import { useFinance } from '../context/FinanceContext';
+import { COLLAPSE_BREAKPOINT, MOBILE_BREAKPOINT } from '../config/constants';
+import { fetchCryptoData } from '../api/cryptoAPI';
+
+// Fallback crypto data (no API dependency)
+const FALLBACK_CRYPTO_DATA = [
+  { name: 'BTC', price: 66230, change: 2.45 },
+  { name: 'ETH', price: 3520, change: 1.82 },
+  { name: 'SOL', price: 185, change: 3.12 },
+];
 
 export const Layout = ({ children, currentTab, setCurrentTab }) => {
   const { role, toggleRole, clearAllData, theme, toggleTheme, globalToast, showToast } = useFinance();
-  const [cryptoData, setCryptoData] = useState([]);
   const [showSettings, setShowSettings] = useState(false);
   const [showWipeConfirm, setShowWipeConfirm] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(() => {
     if (typeof window === 'undefined') return true;
     const width = window.innerWidth;
-    return width < 1024; // Closed on small/medium, open on large
+    return width < COLLAPSE_BREAKPOINT;
   });
+  const [cryptoData, setCryptoData] = useState(() => {
+    // Repeat data 3 times for marquee effect
+    return [...FALLBACK_CRYPTO_DATA, ...FALLBACK_CRYPTO_DATA, ...FALLBACK_CRYPTO_DATA];
+  });
+
+  useEffect(() => {
+    const loadLiveCrypto = async () => {
+      const data = await fetchCryptoData();
+      setCryptoData([...data, ...data, ...data]);
+    };
+    loadLiveCrypto();
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
-      setIsCollapsed(width < 1024); // Closed on small/medium, open on large
+      setIsCollapsed(width < COLLAPSE_BREAKPOINT);
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
@@ -29,20 +49,6 @@ export const Layout = ({ children, currentTab, setCurrentTab }) => {
       document.documentElement.classList.remove('dark');
     }
   }, [theme]);
-
-  useEffect(() => {
-    fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd&include_24hr_change=true')
-      .then(res => res.json())
-      .then(data => {
-        const parsed = [
-          { name: 'BTC', price: data.bitcoin.usd, change: data.bitcoin.usd_24h_change },
-          { name: 'ETH', price: data.ethereum.usd, change: data.ethereum.usd_24h_change },
-          { name: 'SOL', price: data.solana.usd, change: data.solana.usd_24h_change },
-        ];
-        setCryptoData([...parsed, ...parsed, ...parsed]);
-      })
-      .catch(err => console.error('Failed to fetch crypto data:', err));
-  }, []);
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -86,7 +92,7 @@ export const Layout = ({ children, currentTab, setCurrentTab }) => {
                 key={item.id}
                 onClick={() => {
                   setCurrentTab(item.id);
-                  if (window.innerWidth < 768) setIsCollapsed(true);
+                  if (window.innerWidth < MOBILE_BREAKPOINT) setIsCollapsed(true);
                 }}
                 className={`flex items-center rounded-xl transition-all duration-300 overflow-hidden ${isCollapsed ? 'px-3 py-3 justify-center' : 'px-4 py-3'} ${isActive ? 'bg-slate-400 dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-semibold shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:bg-black/5 dark:hover:bg-white/5 font-medium'}`}
                 title={isCollapsed ? item.label : undefined}
@@ -105,7 +111,7 @@ export const Layout = ({ children, currentTab, setCurrentTab }) => {
                 showToast('Card Management is Admin-only!');
               } else {
                 setCurrentTab('cards');
-                if (window.innerWidth < 768) setIsCollapsed(true);
+                if (window.innerWidth < MOBILE_BREAKPOINT) setIsCollapsed(true);
               }
             }}
             className={`md:hidden flex items-center rounded-xl transition-all duration-300 overflow-hidden ${isCollapsed ? 'px-3 py-3 justify-center' : 'px-4 py-3'} text-slate-500 dark:text-slate-400 hover:bg-black/5 dark:hover:bg-white/5 font-medium`}
@@ -154,7 +160,7 @@ export const Layout = ({ children, currentTab, setCurrentTab }) => {
           <button 
              onClick={() => {
                setCurrentTab('support');
-               if (window.innerWidth < 768) setIsCollapsed(true);
+               if (window.innerWidth < MOBILE_BREAKPOINT) setIsCollapsed(true);
              }}
              className={`flex items-center rounded-xl transition-all duration-300 border-none ${isCollapsed ? 'px-3 py-3 justify-center' : 'px-4 py-3'} ${currentTab === 'support' ? 'bg-slate-400 dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-semibold shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:bg-black/5 dark:hover:bg-white/5 font-medium text-sm'}`} 
              title={isCollapsed ? 'Support' : undefined}

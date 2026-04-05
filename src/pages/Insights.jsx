@@ -134,7 +134,7 @@ export const Insights = () => {
     }
 
     return results;
-  }, [transactions, summary, queryMonth]);
+  }, [transactions, summary, queryMonth, formatCurrency]);
 
   const radarData = useMemo(() => {
     const categoryTotals = {};

@@ -1,10 +1,11 @@
-import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { initialTransactions } from '../utils/mockData';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { formatCurrency as globalCurrencyFormatter } from '../utils/currencyFormatter';
 
 const FinanceContext = createContext();
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useFinance = () => {
   return useContext(FinanceContext);
 };
@@ -31,19 +32,19 @@ export const FinanceProvider = ({ children }) => {
   }, [theme]);
 
   // Actions
-  const addTransaction = (t) => {
+  const addTransaction = useCallback((t) => {
     setTransactions(prev => [{ ...t, id: Date.now().toString() }, ...prev]);
-  };
+  }, [setTransactions]);
 
-  const deleteTransaction = (id) => {
+  const deleteTransaction = useCallback((id) => {
     setTransactions(prev => prev.filter(t => t.id !== id));
-  };
+  }, [setTransactions]);
 
-  const updateMonthlyBudget = (amount) => {
+  const updateMonthlyBudget = useCallback((amount) => {
     setMonthlyBudget(Number(amount));
-  };
+  }, [setMonthlyBudget]);
 
-  const clearAllData = () => {
+  const clearAllData = useCallback(() => {
     setTransactions([]);
     setMonthlyBudget(2300);
     setRole('viewer');
@@ -54,15 +55,15 @@ export const FinanceProvider = ({ children }) => {
     localStorage.removeItem('finance_role');
     localStorage.removeItem('finance_theme');
     localStorage.removeItem('finance_currency');
-  };
+  }, [setTransactions, setMonthlyBudget, setRole, setTheme, setCurrency]);
 
-  const toggleRole = () => {
+  const toggleRole = useCallback(() => {
     setRole(prev => prev === 'admin' ? 'viewer' : 'admin');
-  };
+  }, [setRole]);
 
-  const toggleTheme = () => {
+  const toggleTheme = useCallback(() => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
-  };
+  }, [setTheme]);
 
   // Computed data
   const summary = useMemo(() => {
@@ -79,36 +80,43 @@ export const FinanceProvider = ({ children }) => {
     };
   }, [transactions]);
 
-  const formatCurrency = (amount) => globalCurrencyFormatter(amount, currency);
+  const formatCurrency = useCallback((amount) => globalCurrencyFormatter(amount, currency), [currency]);
 
   const [globalToast, setGlobalToast] = useState('');
   
-  const showToast = (msg, duration = 3000) => {
+  const showToast = useCallback((msg, duration = 3000) => {
     setGlobalToast(msg);
     setTimeout(() => setGlobalToast(''), duration);
-  };
+  }, []);
+
+  const contextValue = useMemo(() => ({
+    globalToast,
+    showToast,
+    transactions,
+    monthlyBudget,
+    role,
+    theme,
+    currency,
+    setCurrency,
+    cardData,
+    setCardData,
+    formatCurrency,
+    addTransaction,
+    deleteTransaction,
+    updateMonthlyBudget,
+    clearAllData,
+    toggleRole,
+    toggleTheme,
+    summary
+  }), [
+    globalToast, showToast, transactions, monthlyBudget, role, theme,
+    currency, setCurrency, cardData, setCardData, formatCurrency,
+    addTransaction, deleteTransaction, updateMonthlyBudget, clearAllData,
+    toggleRole, toggleTheme, summary
+  ]);
 
   return (
-    <FinanceContext.Provider value={{
-      globalToast,
-      showToast,
-      transactions,
-      monthlyBudget,
-      role,
-      theme,
-      currency,
-      setCurrency,
-      cardData,
-      setCardData,
-      formatCurrency,
-      addTransaction,
-      deleteTransaction,
-      updateMonthlyBudget,
-      clearAllData,
-      toggleRole,
-      toggleTheme,
-      summary
-    }}>
+    <FinanceContext.Provider value={contextValue}>
       {children}
     </FinanceContext.Provider>
   );

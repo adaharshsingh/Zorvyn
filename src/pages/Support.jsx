@@ -27,7 +27,7 @@ export const Support = () => {
     <div className="animate-fade-in flex flex-col gap-6 h-full pb-8">
       
       {/* Support Hero Header */}
-      <div className="card border border-glass flex flex-col lg:flex-row lg:items-center justify-between p-4 sm:p-6 md:p-8 lg:p-12 gap-4 sm:gap-6 md:gap-8 relative lg:items-center items-center">
+      <div className="card border border-glass flex flex-col lg:flex-row items-center justify-between p-4 sm:p-6 md:p-8 lg:p-12 gap-4 sm:gap-6 md:gap-8 relative lg:items-center">
         {/* Decorative Background Accents */}
         <div className="absolute right-0 top-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none transform translate-x-1/3 -translate-y-1/3"></div>
         <div className="absolute left-0 bottom-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none transform -translate-x-1/2 translate-y-1/2"></div>

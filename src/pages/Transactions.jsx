@@ -17,6 +17,7 @@ export const Transactions = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
   
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, filterType, filterCategory, sortOrder]);
