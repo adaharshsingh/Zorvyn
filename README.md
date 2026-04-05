@@ -109,9 +109,10 @@ A sleek, modern finance dashboard built with React 19 — track spending, manage
 ### 💳 Transactions
 - Full transaction list with search & filters
 - Sort by date (newest / oldest)
-- Add & delete transactions (role-based)
+- **Add, edit & delete** transactions (role-based)
+- **Bulk selection** with checkboxes + batch delete
 - Paginated for large datasets
-- CSV-ready data structure
+- CSV export
 
 </td>
 </tr>
@@ -327,9 +328,27 @@ All user data auto-saves to `localStorage`:
 | View dashboard & charts | ✅ | ✅ |
 | Browse transactions | ✅ | ✅ |
 | Add transactions | ❌ | ✅ |
+| Edit transactions | ❌ | ✅ |
 | Delete transactions | ❌ | ✅ |
+| Bulk delete (checkbox) | ❌ | ✅ |
 | Edit card details | ❌ | ✅ |
 | Wipe all data | ❌ | ✅ |
+
+<br/>
+
+---
+
+<br/>
+
+## ♿ Accessibility
+
+| Feature | Implementation |
+|---|---|
+| **ARIA labels** | All buttons, inputs, filters, table rows, and checkboxes have descriptive `aria-label` attributes |
+| **Keyboard navigation** | `Tab` to move focus, `Enter` to edit, `Delete` to remove, `Space` to toggle checkboxes, `Escape` to close modals |
+| **Semantic HTML** | `role="table"`, `role="region"`, `role="row"` on data elements |
+| **Decorative icons** | All icons marked `aria-hidden="true"` so screen readers skip them |
+| **Focus indicators** | Interactive elements are focusable with visible outlines |
 
 <br/>
 

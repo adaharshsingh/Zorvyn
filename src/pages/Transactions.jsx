@@ -1,12 +1,12 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useFinance } from '../context/FinanceContext';
-import { Plus, Search, Filter, Trash2, ArrowUpDown, Download, Wallet, TrendingUp, CreditCard, Send, Zap, Clock, Wifi, ArrowUpRight, ArrowDownLeft, History, Cpu, Gamepad2, Monitor, Target } from 'lucide-react';
+import { Plus, Search, Filter, Trash2, ArrowUpDown, Download, Wallet, TrendingUp, CreditCard, Send, Zap, Clock, Wifi, ArrowUpRight, ArrowDownLeft, History, Cpu, Gamepad2, Monitor, Target, Pencil } from 'lucide-react';
 import { categories } from '../utils/mockData';
 import { CreditCard as CreditCardIcon } from 'lucide-react';
 import { CreditCard as CreditCardUI } from '../components/CreditCard';
 
 export const Transactions = () => {
-  const { transactions, summary, role, addTransaction, deleteTransaction, currency, setCurrency, formatCurrency, cardData, showToast } = useFinance();
+  const { transactions, summary, role, addTransaction, deleteTransaction, editTransaction, currency, setCurrency, formatCurrency, cardData, showToast } = useFinance();
   
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all'); // all, income, expense
@@ -23,6 +23,26 @@ export const Transactions = () => {
   }, [searchTerm, filterType, filterCategory, sortOrder]);
   
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingTx, setEditingTx] = useState(null);
+  const [editForm, setEditForm] = useState({ date: '', amount: '', category: '', type: '', description: '' });
+  const [selectedIds, setSelectedIds] = useState(new Set());
+
+  // Keyboard navigation: Escape closes modals
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        if (editingTx) setEditingTx(null);
+        else if (isModalOpen) setIsModalOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [editingTx, isModalOpen]);
+
+  // Clear selection when filters change
+  useEffect(() => {
+    setSelectedIds(new Set());
+  }, [searchTerm, filterType, filterCategory, sortOrder, currentPage]);
   
   const dynamicGoals = useMemo(() => {
     let rtxSum = 0, ps5Sum = 0, monSum = 0;
@@ -111,6 +131,52 @@ export const Transactions = () => {
     });
     setIsModalOpen(false);
     setNewTx({ ...newTx, amount: '', description: '' });
+  };
+
+  const openEditModal = (t) => {
+    setEditingTx(t);
+    setEditForm({
+      date: t.date,
+      amount: t.amount,
+      category: t.category,
+      type: t.type,
+      description: t.description
+    });
+  };
+
+  const handleEditSubmit = (e) => {
+    e.preventDefault();
+    if (!editForm.amount || !editForm.description || !editForm.date) return;
+    editTransaction(editingTx.id, {
+      ...editForm,
+      amount: Number(editForm.amount)
+    });
+    showToast('Transaction updated successfully!');
+    setEditingTx(null);
+  };
+
+  const toggleSelect = (id) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === paginatedTransactions.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(paginatedTransactions.map(t => t.id)));
+    }
+  };
+
+  const handleBulkDelete = () => {
+    if (selectedIds.size === 0) return;
+    selectedIds.forEach(id => deleteTransaction(id));
+    showToast(`${selectedIds.size} transaction(s) deleted`);
+    setSelectedIds(new Set());
   };
 
   const handleExportCSV = () => {
@@ -223,25 +289,27 @@ export const Transactions = () => {
           <div className="flex flex-col gap-4 items-start p-5 border-b border-glass bg-bg-secondary w-full">
             {/* Search Bar */}
             <div className="relative w-full">
-              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" aria-hidden="true" />
               <input 
                 type="text" 
                 className="form-input w-full pl-10 text-sm md:text-base" 
                 placeholder="      Search transactions..." 
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                aria-label="Search transactions"
+                id="transaction-search"
               />
             </div>
             
             {/* Filters Row */}
             <div className="flex flex-col sm:flex-row gap-3 w-full">
-              <select className="form-select flex-1 text-xs md:text-sm" value={filterType} onChange={(e) => setFilterType(e.target.value)}>
+              <select className="form-select flex-1 text-xs md:text-sm" value={filterType} onChange={(e) => setFilterType(e.target.value)} aria-label="Filter by transaction type">
                 <option value="all">All Types</option>
                 <option value="income">Income</option>
                 <option value="expense">Expense</option>
               </select>
               
-              <select className="form-select flex-1 text-xs md:text-sm" value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}>
+              <select className="form-select flex-1 text-xs md:text-sm" value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)} aria-label="Filter by category">
                 <option value="all">Categories</option>
                 {categories.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
@@ -250,52 +318,97 @@ export const Transactions = () => {
                 className="btn btn-ghost w-full sm:w-auto text-xs md:text-sm px-3"
                 onClick={() => setSortOrder(prev => prev === 'desc' ? 'asc' : 'desc')}
                 title="Sort by Date"
+                aria-label={`Sort by date, currently ${sortOrder === 'desc' ? 'newest first' : 'oldest first'}`}
               >
-                <ArrowUpDown size={16} /> Date {sortOrder === 'desc' ? '(Newest)' : '(Oldest)'}
+                <ArrowUpDown size={16} aria-hidden="true" /> Date {sortOrder === 'desc' ? '(Newest)' : '(Oldest)'}
               </button>
             </div>
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-3 w-full sm:items-center">
+              {role === 'admin' && selectedIds.size > 0 && (
+                <button 
+                  className="btn flex-1 sm:flex-none text-xs md:text-sm bg-rose-500/10 text-rose-500 border border-rose-500/30 hover:bg-rose-500/20 transition-colors" 
+                  onClick={handleBulkDelete}
+                  aria-label={`Delete ${selectedIds.size} selected transactions`}
+                >
+                  <Trash2 size={16} aria-hidden="true" /> Delete {selectedIds.size} Selected
+                </button>
+              )}
               {role === 'admin' && (
-                <button className="btn btn-ghost flex-1 sm:flex-none text-xs md:text-sm" onClick={handleExportCSV}>
-                  <Download size={18} /> Export CSV
+                <button className="btn btn-ghost flex-1 sm:flex-none text-xs md:text-sm" onClick={handleExportCSV} aria-label="Export transactions to CSV">
+                  <Download size={18} aria-hidden="true" /> Export CSV
                 </button>
               )}
               
               {role === 'admin' && (
-                <button className="btn btn-primary flex-1 sm:flex-none text-xs md:text-sm" onClick={() => setIsModalOpen(true)}>
-                  <Plus size={18} /> Add Transaction
+                <button className="btn btn-primary flex-1 sm:flex-none text-xs md:text-sm" onClick={() => setIsModalOpen(true)} aria-label="Add new transaction">
+                  <Plus size={18} aria-hidden="true" /> Add Transaction
                 </button>
               )}
             </div>
           </div>
           
           {/* Table */}
-          <div className="table-container overflow-x-auto w-full text-xs md:text-sm" style={{ flex: 1, overflowY: 'auto' }}>
-            <table className="w-full min-w-[600px]">
+          <div className="table-container overflow-x-auto w-full text-xs md:text-sm" role="region" aria-label="Transactions list" style={{ flex: 1, overflowY: 'auto' }}>
+            <table className="w-full min-w-[600px]" role="table" aria-label="Financial transactions">
               <thead style={{ position: 'sticky', top: 0, background: 'var(--bg-primary)', zIndex: 1 }}>
                 <tr>
+                  {role === 'admin' && (
+                    <th style={{ width: '40px', textAlign: 'center' }}>
+                      <input 
+                        type="checkbox" 
+                        checked={paginatedTransactions.length > 0 && selectedIds.size === paginatedTransactions.length}
+                        onChange={toggleSelectAll}
+                        className="w-4 h-4 rounded border-glass cursor-pointer accent-indigo-500"
+                        aria-label="Select all transactions on this page"
+                        tabIndex={0}
+                      />
+                    </th>
+                  )}
                   <th>Date</th>
                   <th>Description</th>
                   <th>Category</th>
                   <th>Amount</th>
-                  {role === 'admin' && <th style={{ width: '60px', textAlign: 'center' }}>Action</th>}
+                  {role === 'admin' && <th style={{ width: '90px', textAlign: 'center' }}>Actions</th>}
                 </tr>
               </thead>
               <tbody>
                 {filteredTransactions.length === 0 ? (
                   <tr>
-                    <td colSpan={role === 'admin' ? 5 : 4} style={{ textAlign: 'center', padding: '3rem' }}>
+                    <td colSpan={role === 'admin' ? 7 : 4} style={{ textAlign: 'center', padding: '3rem' }}>
                       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', color: 'var(--text-muted)' }}>
-                        <Filter size={48} opacity={0.2} />
+                        <Filter size={48} opacity={0.2} aria-hidden="true" />
                         <p>No transactions found.</p>
                       </div>
                     </td>
                   </tr>
                 ) : (
-                  paginatedTransactions.map(t => (
-                    <tr key={t.id}>
+                  paginatedTransactions.map((t, idx) => (
+                    <tr 
+                      key={t.id} 
+                      className={`${selectedIds.has(t.id) ? 'bg-indigo-500/5' : ''} transition-colors`}
+                      tabIndex={0}
+                      role="row"
+                      aria-label={`${t.description}, ${t.type === 'income' ? 'income' : 'expense'} of ${t.amount}`}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && role === 'admin') openEditModal(t);
+                        if (e.key === 'Delete' && role === 'admin') deleteTransaction(t.id);
+                        if (e.key === ' ' && role === 'admin') { e.preventDefault(); toggleSelect(t.id); }
+                      }}
+                    >
+                      {role === 'admin' && (
+                        <td style={{ textAlign: 'center' }}>
+                          <input 
+                            type="checkbox" 
+                            checked={selectedIds.has(t.id)}
+                            onChange={() => toggleSelect(t.id)}
+                            className="w-4 h-4 rounded border-glass cursor-pointer accent-indigo-500"
+                            aria-label={`Select ${t.description}`}
+                            tabIndex={0}
+                          />
+                        </td>
+                      )}
                       <td>{new Date(t.date).toLocaleDateString()}</td>
                       <td className="font-semibold text-primary">{t.description}</td>
                       <td><span className="badge badge-neutral">{t.category}</span></td>
@@ -304,14 +417,28 @@ export const Transactions = () => {
                       </td>
                       {role === 'admin' && (
                         <td style={{ textAlign: 'center' }}>
-                          <button 
-                            onClick={() => deleteTransaction(t.id)}
-                            className="btn btn-ghost" 
-                            style={{ padding: '0.25rem', color: 'var(--accent-danger)' }}
-                            title="Delete"
-                          >
-                            <Trash2 size={16} />
-                          </button>
+                          <div className="flex items-center justify-center gap-1">
+                            <button 
+                              onClick={() => openEditModal(t)}
+                              className="btn btn-ghost" 
+                              style={{ padding: '0.25rem', color: 'var(--accent-primary)' }}
+                              title="Edit transaction"
+                              aria-label={`Edit ${t.description}`}
+                              tabIndex={0}
+                            >
+                              <Pencil size={15} aria-hidden="true" />
+                            </button>
+                            <button 
+                              onClick={() => deleteTransaction(t.id)}
+                              className="btn btn-ghost" 
+                              style={{ padding: '0.25rem', color: 'var(--accent-danger)' }}
+                              title="Delete transaction"
+                              aria-label={`Delete ${t.description}`}
+                              tabIndex={0}
+                            >
+                              <Trash2 size={15} aria-hidden="true" />
+                            </button>
+                          </div>
                         </td>
                       )}
                     </tr>
@@ -465,6 +592,61 @@ export const Transactions = () => {
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '2rem' }}>
                 <button type="button" className="btn btn-ghost" onClick={() => setIsModalOpen(false)}>Cancel</button>
                 <button type="submit" className="btn btn-primary">Save Transaction</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Transaction Modal */}
+      {editingTx && role === 'admin' && (
+        <div className="modal-overlay" onClick={() => setEditingTx(null)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <div className="card-header">
+              <h2 className="text-xl font-bold flex items-center gap-2"><Pencil size={20} className="text-indigo-500"/> Edit Transaction</h2>
+              <button className="btn btn-ghost" onClick={() => setEditingTx(null)}>&times;</button>
+            </div>
+            
+            <form onSubmit={handleEditSubmit}>
+              <div className="form-group">
+                <label className="form-label">Type</label>
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                    <input type="radio" value="expense" checked={editForm.type === 'expense'} onChange={e => setEditForm({...editForm, type: e.target.value})} /> Expense
+                  </label>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                    <input type="radio" value="income" checked={editForm.type === 'income'} onChange={e => setEditForm({...editForm, type: e.target.value})} /> Income
+                  </label>
+                </div>
+              </div>
+              
+              <div className="form-group">
+                <label className="form-label">Date</label>
+                <input type="date" required className="form-input" value={editForm.date} onChange={e => setEditForm({...editForm, date: e.target.value})} />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Description</label>
+                <input type="text" required className="form-input" placeholder="e.g., Groceries" value={editForm.description} onChange={e => setEditForm({...editForm, description: e.target.value})} />
+              </div>
+
+              <div style={{ display: 'flex', gap: '1rem' }}>
+                <div className="form-group" style={{ flex: 1 }}>
+                  <label className="form-label">Amount ($)</label>
+                  <input type="number" step="0.01" min="0" required className="form-input" placeholder="0.00" value={editForm.amount} onChange={e => setEditForm({...editForm, amount: e.target.value})} />
+                </div>
+                
+                <div className="form-group" style={{ flex: 1 }}>
+                  <label className="form-label">Category</label>
+                  <select className="form-select" value={editForm.category} onChange={e => setEditForm({...editForm, category: e.target.value})}>
+                    {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '2rem' }}>
+                <button type="button" className="btn btn-ghost" onClick={() => setEditingTx(null)}>Cancel</button>
+                <button type="submit" className="btn btn-primary">Save Changes</button>
               </div>
             </form>
           </div>

@@ -40,6 +40,12 @@ export const FinanceProvider = ({ children }) => {
     setTransactions(prev => prev.filter(t => t.id !== id));
   }, [setTransactions]);
 
+  const editTransaction = useCallback((id, updatedFields) => {
+    setTransactions(prev => prev.map(t => 
+      t.id === id ? { ...t, ...updatedFields } : t
+    ));
+  }, [setTransactions]);
+
   const updateMonthlyBudget = useCallback((amount) => {
     setMonthlyBudget(Number(amount));
   }, [setMonthlyBudget]);
@@ -103,6 +109,7 @@ export const FinanceProvider = ({ children }) => {
     formatCurrency,
     addTransaction,
     deleteTransaction,
+    editTransaction,
     updateMonthlyBudget,
     clearAllData,
     toggleRole,
@@ -111,7 +118,7 @@ export const FinanceProvider = ({ children }) => {
   }), [
     globalToast, showToast, transactions, monthlyBudget, role, theme,
     currency, setCurrency, cardData, setCardData, formatCurrency,
-    addTransaction, deleteTransaction, updateMonthlyBudget, clearAllData,
+    addTransaction, deleteTransaction, editTransaction, updateMonthlyBudget, clearAllData,
     toggleRole, toggleTheme, summary
   ]);
 
